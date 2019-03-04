@@ -8,11 +8,11 @@ safely and efficiently in OMP even if it might throw exceptions.  We employ one 
 as determined By the OMPExceptionCatcher::Strategies enum.
  
  ## Excepton Catching Strategy's
- * OMPExceptionCatcher::Strategies::DoNotTry -- Don't even try,  this is a null op to completely disable
+ * `OMPExceptionCatcher::Strategies::DoNotTry` -- Don't even try,  this is a null op to completely disable
                                                this class's effect.
- * OMPExceptionCatcher::Strategies::Continue -- Catch exceptions and keep going
- * OMPExceptionCatcher::Strategies::Abort    -- Catch exceptions and abort
- * OMPExceptionCatcher::Strategies::RethrowFirst  -- Re-throws first exception thrown by any thread
+ * `OMPExceptionCatcher::Strategies::Continue` -- Catch exceptions and keep going
+ * `OMPExceptionCatcher::Strategies::Abort`    -- Catch exceptions and abort
+ * `OMPExceptionCatcher::Strategies::RethrowFirst`  -- Re-throws first exception thrown by any thread
  
  
  ## Example useage:
