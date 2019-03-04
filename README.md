@@ -15,14 +15,26 @@ as determined By the OMPExceptionCatcher::Strategies enum.
  * `OMPExceptionCatcher::Strategies::RethrowFirst`  -- Re-throws first exception thrown by any thread
  
  
+ 
+ ## Including OMPExceptionCatcher in your OpenMP project
+Since OMPExceptionCatcher is header-only, he easiest way to use it is via the [git subrepo](https://github.com/ingydotnet/git-subrepo) plugin.  Unlike the traditional `git submodule` command, `git subrepo` is transparent to other users of your repository, and solves many of the irksome issues prevalent with the submodule approach.  Follow the [git subrepo install guide](https://github.com/ingydotnet/git-subrepo#installation-instructions) to install on your development machine.
+
+Then to add OMPExceptionCatcher,
+```
+> cd $MY_REPOS
+> git subrepo pull https://github.com/markjolah/OMPExceptionCatcher include/where/ever/OMPExceptionCactcher
+```
+ 
  ## Example useage:
  ~~~.cxx
+ #include <OMPExceptionCatcher/OMPExceptionCatcher.h>
  OMPExceptionCatcher catcher(OMPExceptionCatcher<>::Strategies::Continue);
  #pragma omp parallel for
  for(int n=0; n < N; n++) 
      catcher.run([&]{ my_ouput(n)=do_my calulations(args(n)); }
  catcher.rethrow(); //Required only if you ever might use RethrowFirst strategy
  ~~~
+ 
  
  # License
  * Author: Mark J. Olah
