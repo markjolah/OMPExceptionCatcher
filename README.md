@@ -10,14 +10,14 @@ The goals of the OMPExceptionCatcher project are to:
  * be minimally intrusive, flexible, and easy to incorporate into existing code,
  * and lead to clear, readable, and maintainable OpenMP code.
 
-Functionally, the OMPExceptionCatcher acts as lightweight wrapper that allows an arbitrary function or lambda expression with arguments to be run while catching any unhandled exceptions using one of four possible thread-safe strategies as enumerated by `omp_exception_catcher::Strategies`.
+Functionally, the OMPExceptionCatcher acts as lightweight wrapper that allows an arbitrary function or lambda expression with arguments to be run while catching any unhandled exceptions using one of four possible thread-safe strategies as enumerated by `omp_exception_catcher::Strategy`.
  
 ## Exception Catching Strategies
 
- * `Strategies::DoNotTry` - Don't even try,  this is a null-op to completely disable this class's effect.  Exceptions are not handled and will escape if thrown.
- * `Strategies::Continue` - Catch un-handled exceptions, but completely ignore them and keep going.
- * `Strategies::Abort`    - Catch un-handled exceptions, and immediately abort on the first exception.
- * `Strategies::RethrowFirst`  - Catch un-handled exceptions, keep only the first exception thrown.  Subsequent exceptions are ignored.  Stored exceptions may be re-thrown later in single-threaded code with `OMPExceptionCatcher::rethrow()`.
+ * `Strategy::DoNotTry` - Don't even try,  this is a null-op to completely disable this class's effect.  Exceptions are not handled and will escape if thrown.
+ * `Strategy::Continue` - Catch un-handled exceptions, but completely ignore them and keep going.
+ * `Strategy::Abort`    - Catch un-handled exceptions, and immediately abort on the first exception.
+ * `Strategy::RethrowFirst`  - Catch un-handled exceptions, keep only the first exception thrown.  Subsequent exceptions are ignored.  Stored exceptions may be re-thrown later in single-threaded code with `OMPExceptionCatcher::rethrow()`.
 
 ## Features
  * **Low overhead** -  Locks are only acquired if an un-handled exception is actually caught.  Hopefully this never happens in normally functioning code.  Non-throwing code will see no
