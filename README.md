@@ -2,15 +2,18 @@
 A lightweight class for managing C++ exception handling strategies in OpenMP code.
 
 ## Motivation
-OpenMP code must catch any exceptions that may have been thrown before exiting the OpenMP block.  Allowing an unhanded exception to escape an OpenMP block, normally leads to immediate program termination.  Properly functioning OpenMP code should never throw exceptions, however sometimes things go wrong.  As a mechanism for error reporting in exceptional circumstances, the C++ exception implementation poses no overhead to normally functioning code.
+OpenMP code must catch any exceptions that may have been thrown before exiting the OpenMP block.  Allowing an unhanded exception to escape an OpenMP block normally leads to immediate program termination.  Properly functioning OpenMP code should never throw exceptions, however sometimes things go wrong.  As a mechanism for error reporting in exceptional circumstances, the C++ exception implementation poses no overhead to normally functioning code.
 
-The goal of the OMPExceptionCatcher class is to
- * allow easy handling of exceptions throw in exceptional circumstances even if in OpenMP code blocks
- * maintain the un-measurably small overhead of the normal C++ exception handling mechanism even in parallel code.
+The goals of the OMPExceptionCatcher project are to:
+ * allow OpenMP and other parallel code to safely handle exceptions thrown in exceptional circumstances,
+ * maintain a lock free, no-overhead execution path for normally functioning non-throwing code,
+ * be minimally intrusive, flexible, and easy to incorporate into existing code,
+ * and lead to clear, readable, and maintainable OpenMP code.
 
-The OMPExceptionCatcher acts as lightweight wrapper that allows an arbitrary function or lambda expression to be run safely and efficiently in OMP even if it might throw exceptions.  One of four possible strategies my be employed as determined By the `omp_exception_catcher::Strategies` enum.
+Functionally, the OMPExceptionCatcher acts as lightweight wrapper that allows an arbitrary function or lambda expression with arguments to be run while catching any unhandled exceptions using one of four possible thread-safe strategies as enumerated by `omp_exception_catcher::Strategies`.
  
- ## Exception Catching Strategy's
+## Exception Catching Strategies
+
  * `Strategies::DoNotTry` - Don't even try,  this is a null-op to completely disable this class's effect.  Exceptions are not handled and will escape if thrown.
  * `Strategies::Continue` - Catch un-handled exceptions, but completely ignore them and keep going.
  * `Strategies::Abort`    - Catch un-handled exceptions, and immediately abort on the first exception.
@@ -31,10 +34,18 @@ cd $MY_PROJ_REPOS
 git subrepo pull https://github.com/markjolah/OMPExceptionCatcher include/MyProj/OMPExceptionCactcher
 ```
  
- ## Example usage:
+## Example usage:
+Original code:
  ~~~.cxx
- #include "MyProj/OMPExceptionCatcher/OMPExceptionCatcher.h"
- omp_exception_catcher::OMPExceptionCatcher catcher();
+ #pragma omp parallel for
+ for(int n=0; n < N; n++)
+     my_output(n) = do_my_calculations(args(n));
+ ~~~
+
+Code modified to use OMPExceptionCatcher:
+ ~~~.cxx
+ #include "OMPExceptionCatcher/OMPExceptionCatcher.h"
+ omp_exception_catcher::OMPExceptionCatcher catcher(); // Use default: Strategy::RethrowFirst
  #pragma omp parallel for
  for(int n=0; n < N; n++) 
      catcher.run([&]{ my_output(n) = do_my_calculations(args(n)); })
